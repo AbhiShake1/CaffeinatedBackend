@@ -12,7 +12,7 @@ class CustomUserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
-        return
+        return user
 
     def update_user(self, email, password=None, name=None, fcm_token=None):
         try:

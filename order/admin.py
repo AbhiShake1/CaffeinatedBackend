@@ -4,14 +4,14 @@ from .models import Order
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'student', 'items_str', 'date_ordered', 'total_price', 'status')
-    list_filter = ('student', 'status')
-    search_fields = ('student__username', 'items__name')
+    list_display = ('id', 'items_str', 'date_ordered', 'status')
+    list_filter = ('status', )
+    search_fields = ('items__name', )
     ordering = ('-date_ordered',)
     actions = ['mark_done']
 
     def items_str(self, obj):
-        return ", ".join([str(i) for i in obj.items.all()])
+        return obj.id
 
     items_str.short_description = "Items"
 

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +24,8 @@ SECRET_KEY = 'django-insecure-%6kp39+t%4%t5+kx$^vkkf3nc-04vk*$_w5%7z55^=wa(cbduj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://caffeinated-madhu.onrender.com', ]
 
 # Application definition
 
@@ -40,10 +41,13 @@ INSTALLED_APPS = [
     'order',
     'product',
     'consumer',
+    'cart',
+    'notification',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,13 +118,38 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache', 'django_cache'),
+    }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-FCM_SERVER_KEY = "YOUR_SERVER_KEY_HERE"
+FCM_SERVER_KEY = 'AAAAtawUH2A:APA91bF_-Vyd1lim4wFCUgcVBey5vgi9_1hOA-Ph_sYJMwg_yMnHEmppHmx5Rp8cdn9Y9NpqSyboaBY' \
+                 '-1j4mX42NbRalBHNX5u-0Dhur_-sJrtuqeHRQTqNdDplmOUGh1jtscAmvCBmF'
 
 AUTH_USER_MODEL = 'consumer.Consumer'
+
+# Email settings
+SENDGRID_API_KEY = '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'
+SENDER_EMAIL = 'testislington2@gmail.com'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(BASE_DIR, 'credentials.json')
+
+MEDIA_URL = os.path.join(BASE_DIR, 'media/')
